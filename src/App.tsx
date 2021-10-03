@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import {getDogs, Dogs} from "./services/pets.services";
+import { Fade } from "react-slideshow-image";
 
 function App() {
+
+  const [dogSlider, setSetDogSlider] = useState<Dogs[]>([]);
+
+  const getDogsImages = async () => {
+    const dogs: Dogs[] = await getDogs();
+    setSetDogSlider(dogs)
+  };
+
+  useEffect(() => {
+    getDogsImages()
+  }, []);
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Fade >
+          {dogSlider.map( (dog, index) => {
+              return <div className="each-slide">
+                      <div className="dog-image" style={{'backgroundImage': `url(${dog.url})`}}/>
+                      <span>{dog.title}</span>
+                    </div>
+          })}
+      </Fade>
     </div>
   );
 }
